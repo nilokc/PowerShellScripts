@@ -1,0 +1,16 @@
+#Find accounts that have been inactive for at least 90 days
+$StalePCs = Search-AdAccount -AccountInactive -computersonly -Timespan 90.00:00:00 -searchbase "OU=server,DC=Domain name,DC=local" |
+where-object {($_.name -like "*Enter the Word you want to filter*") -or ($_.name -like "*Enter the Word you want to filter*") -or ($_.operatingsystem -like "*Enter the Word you want to filter*") -or ($_.name -like "*Enter the Word you want to filter*") -or ($_.name -like "*Enter the Word you want to filter*") -or ($_.name -like "*Enter the Word you want to filter*")} |
+select-object SamAccountName,lastlogondate,enabled,objectclass
+$pcsfound = 0
+Foreach ($item in $stalepcs)
+{
+        #Find and remove each Computer based on the computername from the array built above.
+        $SAM = $item.SamAccountName
+        #Get-ADComputer -identity $SAM | remove-adobject -Recursive -confirm:$false -whatif
+        #Increase Count for each cycle
+        $Script:pcsfound++
+}
+"$pcsfound computer objects have been found"
+Pause
+$stalepcs | export-csv -path c:\temp\NAMEofDOCUMENT.csv
