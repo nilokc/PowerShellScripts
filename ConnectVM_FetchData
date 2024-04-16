@@ -1,0 +1,30 @@
+$svrs = "NameofSRV:LoginNAME\administrator:LoginPass", "NameofSRV2:LoginNAME\administrator:LoginPass"
+$content =""
+$content| Out-File -FilePath C:\NameofDocument\Document.txt
+for ($i = 0 ; $i -le $svrs.Length-1 ; $i++){
+
+    $config= $svrs[$i].split(":")
+    #echo $config
+    $ServerName= $config[0]
+    $username =$config[1]
+    $pass = $config[2]
+
+    $adminaccount = $username
+    $PASSWORD = ConvertTo-SecureString $pass -AsPlainText -Force
+    $UNPASSWORD = New-Object System.Management.Automation.PsCredential $adminaccount, $PASSWORD
+
+    $content = ""
+    try{
+
+        $content += (Get-WmiObject -ComputerName $ServerName -Class Win32_OperatingSystem -Credential $UNPASSWORD| Select-Object -Property *).name +"?"
+        $content +=  (Get-WmiObject -ComputerName $ServerName -Class Win32_OperatingSystem -Credential $UNPASSWORD| Select-Object -Property *).OSArchitecture+"?"
+        $content += (Get-WmiObject -ComputerName $ServerName -Class Win32_OperatingSystem -Credential $UNPASSWORD| Select-Object -Property *).CSName
+
+    echo $content
+    Add-Content -Path C:\NameofDocument\Document.txt  -Value $content
+    }
+    catch{
+    echo "Exception occured"
+    }
+
+}
