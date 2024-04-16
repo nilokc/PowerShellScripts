@@ -1,0 +1,28 @@
+$Cred = Get-Credential -UserName domain\name -Message 'Enter Password'
+
+
+#Enter-PSSession -ComputerName ServerName
+#New-PSSession -ComputerName ServerName
+#Enter-PSSession -ComputerName ServerName
+#Enter-PSSession -VMName VirtualMachineName
+
+$svrs = "Enter List of Servers"
+$content =""
+$content| Out-File -FilePath  C:\Users\username\Documents\documentname.txt
+for ($i = 0 ; $i -le $svrs.Length-1 ; $i++){
+    $ServerName= $svrs[$i]
+    $content = ""
+    try{
+
+        $content += (Get-WmiObject -ComputerName $ServerName -Class Win32_OperatingSystem | Select-Object -Property *).name +"?"
+        $content +=  (Get-WmiObject -ComputerName $ServerName -Class Win32_OperatingSystem | Select-Object -Property *).OSArchitecture+"?"
+        $content += (Get-WmiObject -ComputerName $ServerName -Class Win32_OperatingSystem | Select-Object -Property *).CSName
+
+    echo $content
+    Add-Content -Path C:\Users\username\Documents\documentname.txt  -Value $content
+    }
+    catch{
+    echo "Exception occured"
+    }
+
+}
